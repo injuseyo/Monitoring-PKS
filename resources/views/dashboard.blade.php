@@ -292,7 +292,7 @@
         <p class="angka">2</p>
         <p class="keterangan">Aktivitas tercatat hari ini</p>
       </div>
-      <div class="card">
+      <div class="card">z
         <h3>Pekerja Aktif <img src="icons/pekerja aktif.png" alt="Pekerja Aktif Icon"></h3>
         <p class="angka">5</p>
         <p class="keterangan">Total pekerjaan</p>

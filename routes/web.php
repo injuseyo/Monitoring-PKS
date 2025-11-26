@@ -3,7 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\AktivitasController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\PekerjaanController;
+use App\Http\Controllers\ArsipController;   
 // Halaman utama
 Route::get('/', [MonitoringController::class, 'index'])->name('home');
 
@@ -14,23 +18,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ✅ Route yang hanya bisa diakses setelah login
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/karyawan', function () {
-        return view('karyawan');
-    });
+Route::get('/karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
 
-    Route::get('/pekerjaan', function () {
-        return view('pekerjaan');
-    });
+Route::get('/pekerjaan', [PekerjaanController::class, 'index'])->name('pekerjaan.index');
 
-    Route::get('/aktivitas', function () {
-        return view('aktivitas');
-    });
+Route::get('/aktivitas', [AktivitasController::class, 'index'])->name('aktivitas.index');
 
-    Route::get('/arsip', function () {
-        return view('arsip');
-    });
+Route::get('/arsip', [ArsipController::class, 'index'])->name('arsip.index');
 });

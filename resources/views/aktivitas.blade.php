@@ -296,7 +296,7 @@
       </table>
     </div>
   </div>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
   function logout() {
     Swal.fire({
@@ -324,6 +324,22 @@
       }
     });
   }
+ const ctx = document.getElementById('arsipChart');
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Jan','Feb','Mar','Apr','Mei','Jun'],
+        datasets: [{
+          label: 'Jumlah Arsip',
+            data: [12, 9, 14, 7, 10, 13],
+            backgroundColor: '#1d4ed8'
+        }]
+      },
+      options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+  }
+
 </script>
 </body>
 </html>
