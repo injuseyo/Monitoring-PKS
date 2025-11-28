@@ -29,7 +29,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/pekerjaan', [PekerjaanController::class, 'index'])->name('pekerjaan.index');
 
+     // Route Aktivitas - tambahkan yang kurang
     Route::get('/aktivitas', [AktivitasController::class, 'index'])->name('aktivitas.index');
+    Route::post('/aktivitas', [AktivitasController::class, 'store'])->name('aktivitas.store');
+    Route::put('/aktivitas/{id}', [AktivitasController::class, 'update'])->name('aktivitas.update');
+    Route::delete('/aktivitas/{id}', [AktivitasController::class, 'destroy'])->name('aktivitas.destroy');
 
     Route::get('/arsip', [ArsipController::class, 'index'])->name('arsip.index');
 });
