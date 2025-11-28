@@ -3,43 +3,33 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\PekerjaanController;
+use App\Http\Controllers\AktivitasController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KaryawanController;
-use App\Http\Controllers\AktivitasController; // <-- tambahkan ini
+use App\Http\Controllers\PekerjaanController;
+use App\Http\Controllers\ArsipController;   
 
 // Halaman utama
 Route::get('/', [MonitoringController::class, 'index'])->name('home');
 
-// ROUTE AUTH
+// ✅ Route Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// ✅ Route yang hanya bisa diakses setelah login
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::get('/karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
+    // Route Karyawan - tambahkan yang kurang
+    Route::get('/karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
+    Route::post('/karyawan', [KaryawanController::class, 'store'])->name('karyawan.store');
+    Route::put('/karyawan/{id}', [KaryawanController::class, 'update'])->name('karyawan.update');
+    Route::delete('/karyawan/{id}', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
 
-    Route::post('/karyawan', [KaryawanController::class, 'store'])
-        ->name('karyawan.store');
+    Route::get('/pekerjaan', [PekerjaanController::class, 'index'])->name('pekerjaan.index');
 
-    Route::put('/karyawan/{karyawan}', [KaryawanController::class, 'update'])
-        ->name('karyawan.update');
+    Route::get('/aktivitas', [AktivitasController::class, 'index'])->name('aktivitas.index');
 
-    Route::delete('/karyawan/{karyawan}', [KaryawanController::class, 'destroy'])
-        ->name('karyawan.destroy');
-
-
-    // ================== AKTIVITAS ===================
-    Route::get('/aktivitas', [AktivitasController::class, 'index'])
-        ->name('aktivitas.index');
-
-    Route::post('/aktivitas', [AktivitasController::class, 'store'])
-        ->name('aktivitas.store');
-
-
-    // ================== ARSIP =======================
-    Route::get('/arsip', function () {
-        return view('arsip');
-    });
+    Route::get('/arsip', [ArsipController::class, 'index'])->name('arsip.index');
 });
