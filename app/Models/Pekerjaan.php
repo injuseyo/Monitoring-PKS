@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Karyawan extends Model
+class Pekerjaan extends Model
 {
     use HasFactory;
-    protected $fillable = ['nama', 'pekerjaan'];
+
+    protected $fillable = [
+        'nama',
+        'deskripsi',
+    ];
 
     public function aktivitas()
     {

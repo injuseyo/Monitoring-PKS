@@ -102,7 +102,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      /* margin-bottom: 20px; */
       position: fixed;
       top: 0;
       left: 280px;
@@ -139,6 +138,21 @@
       border-radius: 50%;
     }
 
+    .btn-add {
+      background-color: #1e3a8a;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn-add:hover {
+      background-color: #1d4ed8;
+    }
+
     /*------------------------------ Cards --------------------------------*/
 
     .filter-section, .table-section {
@@ -147,7 +161,13 @@
       border-radius: 10px;
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
       margin-bottom: 25px;
-      
+    }
+
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
     }
 
     .filter-row {
@@ -164,7 +184,7 @@
       font-size: 14px;
     }
 
-    select, input[type="date"] {
+    select, input[type="date"], input[type="time"] {
       width: 100%;
       padding: 10px;
       border: 1px solid #ccc;
@@ -207,6 +227,96 @@
       filter: brightness(0) saturate(100%) invert(30%) sepia(100%) saturate(1000%) hue-rotate(200deg);
     }
 
+    /* ============ MODAL TAMBAH AKTIVITAS ============= */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.25);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1500;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      padding: 20px 24px;
+      border-radius: 12px;
+      width: 430px;
+      max-width: 95%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    }
+
+    .modal-content h3 {
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .modal-content label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .modal-content input,
+    .modal-content select,
+    .modal-content textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .modal-content textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .btn-primary {
+      background-color: #1e3a8a;
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-primary:hover {
+      background-color: #1d4ed8;
+    }
+
+    .btn-secondary {
+      background-color: #e5e7eb;
+      color: #374151;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-secondary:hover {
+      background-color: #d1d5db;
+    }
+
   </style>
 </head>
 <body>
@@ -215,14 +325,15 @@
     <p>Admin</p>
 
     <div class="menu">
-      <a href="dashboard"><img src="icons/dashboard.png" alt="Dashboard Icon"> Dashboard</a>
-      <a href="karyawan"><img src="icons/karyawan.png" alt="Karyawan Icon"> Karyawan</a>
-      <a href="pekerjaan"><img src="icons/pekerjaan.png" alt="Pekerjaan Icon"> Pekerjaan</a>
-      <a href="#" class="active"><img src="icons/aktivitas harian.png" alt="Aktivitas Harian Icon"> Aktivitas Harian</a>
-      <a href="arsip"><img src="icons/arsip.png" alt="Arsip Icon"> Arsip</a>
+      <a href="/dashboard"><img src="icons/dashboard.png" alt="Dashboard Icon"> Dashboard</a>
+      <a href="/karyawan"><img src="icons/karyawan.png" alt="Karyawan Icon"> Karyawan</a>
+      <a href="/pekerjaan"><img src="icons/pekerjaan.png" alt="Pekerjaan Icon"> Pekerjaan</a>
+      <a href="/aktivitas" class="active"><img src="icons/aktivitas harian.png" alt="Aktivitas Harian Icon"> Aktivitas Harian</a>
+      <a href="/arsip"><img src="icons/arsip.png" alt="Arsip Icon"> Arsip</a>
       <div class="logout">
         <button onclick="logout()">
-          <img src="icons/log out.png" alt="Log out Icon">Log Out</button>
+          <img src="icons/log out.png" alt="Log out Icon">Log Out
+        </button>
       </div>
     </div>
   </div>
@@ -239,29 +350,56 @@
       </div>
     </div>
 
-
+    {{-- ================= FILTER AKTIVITAS ================= --}}
     <div class="filter-section">
-      <h3>Filter Aktivitas</h3>
-      <div class="filter-row">
-        <div>
-          <label style="font-weight: bold;">Nama</label>
-          <select>
-            <option>Semua karyawan</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-weight: bold;">Pekerjaan</label>
-          <select>
-            <option>Semua pekerjaan</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-weight: bold;">Waktu</label>
-          <input type="date" />
-        </div>
+      <div class="filter-header">
+        <h3>Filter Aktivitas</h3>
+        <button type="button" class="btn-add" id="openModalBtn">+ Tambah Aktivitas</button>
       </div>
+
+      <form method="GET" action="{{ route('aktivitas.index') }}">
+        <div class="filter-row">
+          <div>
+            <label style="font-weight: bold;">Nama</label>
+            <select name="karyawan_id">
+              <option value="">Semua karyawan</option>
+              @foreach ($karyawans as $karyawan)
+                <option value="{{ $karyawan->id }}"
+                  {{ request('karyawan_id') == $karyawan->id ? 'selected' : '' }}>
+                  {{ $karyawan->nama }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+
+          <div>
+            <label style="font-weight: bold;">Pekerjaan</label>
+            <select name="pekerjaan_id">
+              <option value="">Semua pekerjaan</option>
+              @foreach ($pekerjaans as $pekerjaan)
+                <option value="{{ $pekerjaan->id }}"
+                  {{ request('pekerjaan_id') == $pekerjaan->id ? 'selected' : '' }}>
+                  {{ $pekerjaan->nama }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+
+          <div>
+            <label style="font-weight: bold;">Waktu</label>
+            <input type="date"
+                   name="tanggal"
+                   value="{{ request('tanggal') }}" />
+          </div>
+        </div>
+
+        <div style="margin-top: 15px;">
+          <button type="submit" class="btn-primary">Tampilkan</button>
+        </div>
+      </form>
     </div>
 
+    {{-- ================= TABEL AKTIVITAS ================= --}}
     <div class="table-section">
       <h3>Aktivitas Karyawan</h3>
       <table>
@@ -276,27 +414,87 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Satpam</td>
-            <td>Yaya</td>
-            <td>Patroli</td>
-            <td>26-09-2025</td>
-            <td>07.00</td>
-            <td><img src="icons/foto.png" alt="foto Icon" class="eye-icon"></td>
-          </tr>
-          <tr>
-            <td>Satpam</td>
-            <td>Yaya</td>
-            <td>Patroli</td>
-            <td>26-09-2025</td>
-            <td>07.00</td>
-            <td><img src="icons/foto.png" alt="foto Icon" class="eye-icon"></td>
-          </tr>
+          @forelse ($aktivitas as $item)
+            <tr>
+              <td>{{ $item->pekerjaan->nama ?? '-' }}</td>
+              <td>{{ $item->karyawan->nama ?? '-' }}</td>
+              <td>{{ $item->deskripsi }}</td>
+              <td>
+                @if($item->tanggal)
+                  {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
+                @else
+                  -
+                @endif
+              </td>
+              <td>{{ $item->waktu ?? '-' }}</td>
+              <td>
+                @if(!empty($item->foto))
+                  <img src="{{ asset($item->foto) }}" alt="foto Icon" class="eye-icon">
+                @else
+                  <img src="icons/foto.png" alt="foto Icon" class="eye-icon">
+                @endif
+              </td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="6">Belum ada aktivitas yang tercatat.</td>
+            </tr>
+          @endforelse
         </tbody>
       </table>
     </div>
   </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  {{-- ============ MODAL TAMBAH AKTIVITAS ============ --}}
+  <div id="aktivitasModal" class="modal">
+    <div class="modal-content">
+      <h3>Tambah Aktivitas</h3>
+
+      <form id="aktivitasForm"
+            action="{{ route('aktivitas.store') }}"
+            method="POST"
+            enctype="multipart/form-data">
+        @csrf
+
+        <label for="karyawanSelect">Nama Karyawan</label>
+        <select id="karyawanSelect" name="karyawan_id" required>
+          <option value="">-- Pilih karyawan --</option>
+          @foreach ($karyawans as $karyawan)
+            <option value="{{ $karyawan->id }}">{{ $karyawan->nama }}</option>
+          @endforeach
+        </select>
+
+        <label for="pekerjaanSelect">Pekerjaan</label>
+        <select id="pekerjaanSelect" name="pekerjaan_id" required>
+          <option value="">-- Pilih pekerjaan --</option>
+          @foreach ($pekerjaans as $pekerjaan)
+            <option value="{{ $pekerjaan->id }}">{{ $pekerjaan->nama }}</option>
+          @endforeach
+        </select>
+
+        <label for="deskripsiInput">Deskripsi</label>
+        <textarea id="deskripsiInput"
+                  name="deskripsi"
+                  placeholder="Contoh: Patroli pagi, cek area parkir"
+                  required></textarea>
+
+        <label for="tanggalInput">Tanggal</label>
+        <input type="date" id="tanggalInput" name="tanggal" required>
+
+        <label for="waktuInput">Waktu</label>
+        <input type="time" id="waktuInput" name="waktu" required>
+
+        <label for="fotoInput">Foto (opsional)</label>
+        <input type="file" id="fotoInput" name="foto" accept="image/*">
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="closeModalBtn">Batal</button>
+          <button type="submit" class="btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 <script>
   function logout() {
     Swal.fire({
@@ -319,27 +517,31 @@
         });
 
         setTimeout(() => {
-          window.location.href = "login"; 
+          window.location.href = "/login";
         }, 1800);
       }
     });
   }
- const ctx = document.getElementById('arsipChart');
-  if (ctx) {
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Jan','Feb','Mar','Apr','Mei','Jun'],
-        datasets: [{
-          label: 'Jumlah Arsip',
-            data: [12, 9, 14, 7, 10, 13],
-            backgroundColor: '#1d4ed8'
-        }]
-      },
-      options: { responsive: true, scales: { y: { beginAtZero: true } } }
-    });
-  }
 
+  // ==== LOGIKA MODAL TAMBAH AKTIVITAS ====
+  const modal = document.getElementById('aktivitasModal');
+  const openModalBtn = document.getElementById('openModalBtn');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+
+  openModalBtn.addEventListener('click', () => {
+    document.getElementById('aktivitasForm').reset();
+    modal.classList.add('show');
+  });
+
+  closeModalBtn.addEventListener('click', () => {
+    modal.classList.remove('show');
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('show');
+    }
+  });
 </script>
 </body>
 </html>
