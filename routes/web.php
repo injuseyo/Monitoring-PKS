@@ -20,7 +20,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::get('/karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
+    // Route Karyawan - tambahkan yang kurang
+    Route::get('/karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
+    Route::post('/karyawan', [KaryawanController::class, 'store'])->name('karyawan.store');
+    Route::put('/karyawan/{id}', [KaryawanController::class, 'update'])->name('karyawan.update');
+    Route::delete('/karyawan/{id}', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
 
 Route::get('/pekerjaan', [PekerjaanController::class, 'index'])->name('pekerjaan.index');
 
