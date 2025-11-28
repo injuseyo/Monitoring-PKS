@@ -9,4 +9,9 @@ class Karyawan extends Model
 {
     use HasFactory;
     protected $fillable = ['nama', 'pekerjaan'];
+
+    public function aktivitas()
+    {
+        return $this->hasMany(Aktivitas::class);
+    }
 }
